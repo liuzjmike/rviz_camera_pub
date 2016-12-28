@@ -55,7 +55,7 @@ class Camera;
 
 namespace video_export
 {
-class  VideoPublisher;
+class VideoPublisher;
 }
 
 namespace rviz
@@ -69,10 +69,7 @@ class RosTopicProperty;
 class DisplayGroupVisibilityProperty;
 class ColorProperty;
 
-/**
- * \class CameraPub
- *
- */
+
 class CameraPub: public Display, public Ogre::RenderTargetListener
 {
   Q_OBJECT

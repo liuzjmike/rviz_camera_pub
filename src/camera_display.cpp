@@ -107,8 +107,8 @@ public:
     pub_ = it_.advertise(topic, 1);
   }
 
-  // bool publishFrame(Ogre::RenderWindow * render_object, const std::string frame_id)
-  bool publishFrame(Ogre::RenderTexture * render_object, const std::string frame_id)
+  bool publishFrame(Ogre::RenderWindow * render_object, const std::string frame_id)
+  //bool publishFrame(Ogre::RenderTexture * render_object, const std::string frame_id)
   {
     if (pub_.getTopic() == "")
     {
@@ -126,10 +126,7 @@ public:
     Ogre::PixelFormat pf = render_object->suggestPixelFormat();
     uint pixelsize = Ogre::PixelUtil::getNumElemBytes(pf);
     uint datasize = width * height * pixelsize;
-
-    // 1.05 multiplier is to avoid crash when the window is resized.
-    // There should be a better solution.
-    uchar *data = OGRE_ALLOC_T(uchar, datasize * 1.05, Ogre::MEMCATEGORY_RENDERSYS);
+    uchar *data = OGRE_ALLOC_T(uchar, datasize, Ogre::MEMCATEGORY_RENDERSYS);
     Ogre::PixelBox pb(width, height, 1, pf, data);
     render_object->copyContentsToMemory(pb, Ogre::RenderTarget::FB_AUTO);
 
@@ -146,7 +143,7 @@ public:
       image.encoding = sensor_msgs::image_encodings::RGBA8;  // would break if pf changes
     else
     {
-      ROS_ERROR_STREAM("unknown pixe format " << pixelsize << " " << pf);
+      ROS_ERROR_STREAM("unknown pixel format " << pixelsize << " " << pf);
     }
     image.is_bigendian = (OGRE_ENDIAN == OGRE_ENDIAN_BIG);
     image.data.resize(datasize);
