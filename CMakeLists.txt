@@ -43,11 +43,11 @@ include_directories(
 
 if(rviz_QT_VERSION VERSION_LESS "5")
 qt4_wrap_cpp(MOC_FILES
-  include/rviz_camera_stream/camera_display.h
+  include/camera_display.h
   )
 else()
 qt5_wrap_cpp(MOC_FILES
-  include/rviz_camera_stream/camera_display.h
+  include/camera_display.h
   )
 endif()
 

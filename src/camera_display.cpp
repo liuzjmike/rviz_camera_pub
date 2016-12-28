@@ -59,7 +59,7 @@
 #include <string>
 #include <tf/transform_listener.h>
 
-#include "rviz_camera_stream/camera_display.h"
+#include "camera_display.h"
 
 namespace video_export
 {
@@ -107,8 +107,8 @@ public:
     pub_ = it_.advertise(topic, 1);
   }
 
-  bool publishFrame(Ogre::RenderWindow * render_object, const std::string frame_id)
-  //bool publishFrame(Ogre::RenderTexture * render_object, const std::string frame_id)
+  //bool publishFrame(Ogre::RenderWindow * render_object, const std::string frame_id)
+  bool publishFrame(Ogre::RenderTexture * render_object, const std::string frame_id)
   {
     if (pub_.getTopic() == "")
     {
