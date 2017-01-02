@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(rviz_camera_stream)
+project(rviz_camera_pub)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -51,12 +51,12 @@ qt5_wrap_cpp(MOC_FILES
   )
 endif()
 
-add_library(rviz_camera_stream
+add_library(rviz_camera_pub
   src/camera_display.cpp
   ${MOC_FILES}
 )
 
-target_link_libraries(rviz_camera_stream
+target_link_libraries(rviz_camera_pub
   ${catkin_LIBRARIES}
   ${QT_LIBRARIES}
 )

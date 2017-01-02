@@ -27,21 +27,24 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef RVIZ_CAMERA_STREAM_CAMERA_DISPLAY_H
-#define RVIZ_CAMERA_STREAM_CAMERA_DISPLAY_H
+#ifndef RVIZ_CAMERA_PUB_H
+#define RVIZ_CAMERA_PUB_H
 
 #include <QObject>
-#include <string>
 
 #ifndef Q_MOC_RUN
 #include <OgreMaterial.h>
 #include <OgreRenderTargetListener.h>
 #include <OgreSharedPtr.h>
-#include <OgreTexture.h>
 
 # include <sensor_msgs/CameraInfo.h>
 
+# include <message_filters/subscriber.h>
+# include <tf/message_filter.h>
+
 # include "rviz/image/image_display_base.h"
+# include "rviz/image/ros_image_texture.h"
+# include "rviz/render_panel.h"
 #include <std_srvs/Trigger.h>
 #endif
 
@@ -67,10 +70,8 @@ class IntProperty;
 class RenderPanel;
 class RosTopicProperty;
 class DisplayGroupVisibilityProperty;
-class ColorProperty;
 
-
-class CameraPub: public Display, public Ogre::RenderTargetListener
+class CameraPub: public ImageDisplayBase, public Ogre::RenderTargetListener
 {
   Q_OBJECT
 public:
@@ -80,12 +81,12 @@ public:
   // Overrides from Display
   virtual void onInitialize();
   virtual void fixedFrameChanged();
-  virtual void update(float wall_dt, float ros_dt);
+  virtual void update( float wall_dt, float ros_dt );
   virtual void reset();
 
   // Overrides from Ogre::RenderTargetListener
-  virtual void preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt);
-  virtual void postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt);
+  virtual void preRenderTargetUpdate( const Ogre::RenderTargetEvent& evt );
+  virtual void postRenderTargetUpdate( const Ogre::RenderTargetEvent& evt );
 
   static const QString BACKGROUND;
   static const QString OVERLAY;
@@ -96,6 +97,9 @@ protected:
   virtual void onEnable();
   virtual void onDisable();
 
+  ROSImageTexture texture_;
+  RenderPanel* render_panel_;
+
 private Q_SLOTS:
   void forceRender();
   void updateAlpha();
@@ -103,7 +107,6 @@ private Q_SLOTS:
   void updateTopic();
   virtual void updateQueueSize();
   virtual void updateFrameRate();
-  virtual void updateBackgroundColor();
   virtual void updateDisplayNamespace();
 
 private:
@@ -118,23 +121,33 @@ private:
   bool trigger_activated_;
   ros::Time last_image_publication_time_;
 
-  void caminfoCallback(const sensor_msgs::CameraInfo::ConstPtr& msg);
+  virtual void processMessage(const sensor_msgs::Image::ConstPtr& msg);
+  void caminfoCallback( const sensor_msgs::CameraInfo::ConstPtr& msg );
 
   bool updateCamera();
 
   void clear();
   void updateStatus();
 
-  ros::Subscriber caminfo_sub_;
+  Ogre::SceneNode* bg_scene_node_;
+  Ogre::SceneNode* fg_scene_node_;
 
-  RosTopicProperty* topic_property_;
-  RosTopicProperty* camera_info_property_;
+  Ogre::Rectangle2D* bg_screen_rect_;
+  Ogre::MaterialPtr bg_material_;
+
+  Ogre::Rectangle2D* fg_screen_rect_;
+  Ogre::MaterialPtr fg_material_;
+
+  message_filters::Subscriber<sensor_msgs::CameraInfo> caminfo_sub_;
+  tf::MessageFilter<sensor_msgs::CameraInfo>* caminfo_tf_filter_;
+
+  FloatProperty* alpha_property_;
+  EnumProperty* image_position_property_;
+  FloatProperty* zoom_property_;
   DisplayGroupVisibilityProperty* visibility_property_;
-  IntProperty* queue_size_property_;
+  RosTopicProperty* pub_topic_property_;
   StringProperty* namespace_property_;
-
   FloatProperty* frame_rate_property_;
-  ColorProperty* background_color_property_;
 
   sensor_msgs::CameraInfo::ConstPtr current_caminfo_;
   boost::mutex caminfo_mutex_;
@@ -149,13 +162,9 @@ private:
 
   video_export::VideoPublisher* video_publisher_;
 
-  // render to texture
-  // from http://www.ogre3d.org/tikiwiki/tiki-index.php?page=Intermediate+Tutorial+7
   Ogre::Camera* camera_;
-  Ogre::TexturePtr rtt_texture_;
-  Ogre::RenderTexture* render_texture_;
 };
 
-}  // namespace rviz
+} // namespace rviz
 
-#endif  // RVIZ_CAMERA_STREAM_CAMERA_DISPLAY_H
+ #endif

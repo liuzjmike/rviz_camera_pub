@@ -1,17 +1,17 @@
 <package>
-  <name>rviz_camera_stream</name>
+  <name>rviz_camera_pub</name>
   <version>0.0.1</version>
   <description>
     Modified RViz camera plugin.
     Allows to output the rviz display view as an Image topic.
   </description>
 
-  <maintainer email="lucasw_backwards@gmail.com">Lucas Walter</maintainer>
+  <maintainer email="liuzjmike@gmail.com">Mike Liu</maintainer>
   <author email="tbd@tbd.com">Mikhail Medvedev</author>
 
   <license>BSD</license>
 
-  <url type="website">https://github.com/lucasw/rviz_camera_stream</url>
+  <url type="website">https://github.com/liuzjmike/rviz_camera_pub</url>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>image_transport</build_depend>
