@@ -351,7 +351,8 @@ void CameraPub::subscribe()
   if (!isEnabled())
     return;
 
-  std::string topic_name = topic_property_->getTopicStd();
+  //std::string topic_name = namespace_property_->getStdString() + "/rviz_camera_pub";
+  std::string topic_name = "rviz_camera_pub";
   if (topic_name.empty())
   {
     setStatus(StatusProperty::Error, "Output Topic", "No topic set");
@@ -437,7 +438,7 @@ void CameraPub::updateDisplayNamespace()
   trigger_service_.shutdown();
   trigger_service_ = nh_.advertiseService(camera_trigger_name_, &CameraPub::triggerCallback, this);
 
-  /// Check for service name collision
+  // Check for service name collision
   if (trigger_service_.getService().empty())
   {
     setStatus(StatusProperty::Warn, "Display namespace",
