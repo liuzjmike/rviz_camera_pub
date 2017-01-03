@@ -33,8 +33,7 @@ endif()
 ## etc for Qt signals because they can conflict with boost signals
 add_definitions(-DQT_NO_KEYWORDS)
 
-catkin_package(
-)
+catkin_package()
 
 include_directories(
   include
@@ -51,12 +50,14 @@ qt5_wrap_cpp(MOC_FILES
   )
 endif()
 
-add_library(rviz_camera_pub
+add_library(
+  rviz_camera_pub
   src/camera_display.cpp
   ${MOC_FILES}
 )
 
-target_link_libraries(rviz_camera_pub
+target_link_libraries(
+  rviz_camera_pub
   ${catkin_LIBRARIES}
   ${QT_LIBRARIES}
 )

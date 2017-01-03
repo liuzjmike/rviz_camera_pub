@@ -50,6 +50,7 @@
 #include "rviz/properties/float_property.h"
 #include "rviz/properties/int_property.h"
 #include "rviz/properties/ros_topic_property.h"
+#include <rviz/properties/color_property.h>
 #include "rviz/render_panel.h"
 #include "rviz/uniform_string_stream.h"
 #include "rviz/validate_floats.h"
@@ -195,7 +196,7 @@ CameraPub::CameraPub()
   image_position_property_->addOption( OVERLAY );
   image_position_property_->addOption( BOTH );
 
-  pub_topic_property_ = new RosTopicProperty("Image Topic", "rviz_camera_pub",
+  pub_topic_property_ = new RosTopicProperty("Output Topic", "rviz_camera_pub/image_raw",
                                          QString::fromStdString(ros::message_traits::datatype<sensor_msgs::Image>()),
                                          "sensor_msgs::Image topic to publish to.", this, SLOT(updateTopic()));
 
@@ -219,6 +220,10 @@ CameraPub::CameraPub()
       "trigger single images with the /rviz_camera_trigger service.",
                                            this, SLOT(updateFrameRate()));
   frame_rate_property_->setMin(-1);
+
+  background_color_property_ = new ColorProperty("Background Color", Qt::black,
+                                                 "Sets background color, values from 0.0 to 1.0.",
+                                                 this, SLOT(updateBackgroundColor()));
 }
 
 CameraPub::~CameraPub()
@@ -432,7 +437,7 @@ void CameraPub::subscribe()
   ImageDisplayBase::subscribe();
 
   std::string topic = topic_property_->getTopicStd();
-  std::string caminfo_topic = image_transport::getCameraInfoTopic(topic_property_->getTopicStd());
+  std::string caminfo_topic = image_transport::getCameraInfoTopic(topic);
 
   try
   {
@@ -502,6 +507,10 @@ void CameraPub::updateQueueSize()
   ImageDisplayBase::updateQueueSize();
 }
 
+void CameraPub::updateFrameRate()
+{
+}
+
 void CameraPub::updateDisplayNamespace()
 {
   std::string name = namespace_property_->getStdString();
@@ -533,6 +542,11 @@ void CameraPub::updateDisplayNamespace()
 
   setStatus(StatusProperty::Ok, "Display namespace", "OK");
   updateTopic();
+}
+
+void CameraPub::updateBackgroundColor()
+{
+  render_panel_->setBackgroundColor(background_color_property_->getOgreColor());
 }
 
 void CameraPub::clear()
@@ -737,4 +751,4 @@ void CameraPub::reset()
 } // namespace rviz
 
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS( rviz::CameraPub, rviz::ImageDisplayBase )
+PLUGINLIB_EXPORT_CLASS( rviz::CameraPub, rviz::Display )

@@ -70,6 +70,7 @@ class IntProperty;
 class RenderPanel;
 class RosTopicProperty;
 class DisplayGroupVisibilityProperty;
+class ColorProperty;
 
 class CameraPub: public ImageDisplayBase, public Ogre::RenderTargetListener
 {
@@ -106,8 +107,9 @@ private Q_SLOTS:
 
   void updateTopic();
   virtual void updateQueueSize();
-  virtual void updateFrameRate();
   virtual void updateDisplayNamespace();
+  virtual void updateFrameRate();
+  virtual void updateBackgroundColor();
 
 private:
   std::string camera_trigger_name_;
@@ -148,6 +150,7 @@ private:
   RosTopicProperty* pub_topic_property_;
   StringProperty* namespace_property_;
   FloatProperty* frame_rate_property_;
+  ColorProperty* background_color_property_;
 
   sensor_msgs::CameraInfo::ConstPtr current_caminfo_;
   boost::mutex caminfo_mutex_;
